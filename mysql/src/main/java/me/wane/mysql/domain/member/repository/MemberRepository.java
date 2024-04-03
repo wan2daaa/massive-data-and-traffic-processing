@@ -3,6 +3,7 @@ package me.wane.mysql.domain.member.repository;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import me.wane.mysql.domain.member.entity.Member;
@@ -49,6 +50,33 @@ public class MemberRepository {
 
      return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(sql, params, rowMapper));
      // Optional.ofNullable(T value) 는 value 가 null 이 아니면 Optional.of(value) 를 반환하고, null 이면 Optional.empty() 를 반환한다.
+
+  }
+
+  public List<Member> findAllByIdIn(List<Long> ids) {
+    /**
+     * select *
+     * from Member
+     * where id in (:ids)
+     */
+
+    if (ids.isEmpty()) {
+      return List.of();
+    }
+
+    String sql = String.format("SELECT * FROM %s WHERE id in (:ids)", TABLE);
+
+    MapSqlParameterSource params = new MapSqlParameterSource().addValue("ids", ids);
+
+    RowMapper<Member> rowMapper = (ResultSet resultSet, int rowNum) -> Member.builder()
+        .id(resultSet.getLong("id"))
+        .email(resultSet.getString("email"))
+        .nickname(resultSet.getString("nickname"))
+        .birthday(resultSet.getObject("birthday", LocalDate.class))
+        .createdAt(resultSet.getObject("createdAt", LocalDateTime.class))
+        .build();
+
+    return namedParameterJdbcTemplate.query(sql, params, rowMapper);
 
   }
 

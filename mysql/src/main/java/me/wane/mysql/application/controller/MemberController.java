@@ -1,4 +1,4 @@
-package me.wane.mysql.controller;
+package me.wane.mysql.application.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
