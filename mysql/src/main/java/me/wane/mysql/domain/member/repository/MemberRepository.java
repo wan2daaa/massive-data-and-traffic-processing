@@ -1,12 +1,20 @@
 package me.wane.mysql.domain.member.repository;
 
+import java.sql.ResultSet;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import me.wane.mysql.domain.member.entity.Member;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+
 
 @RequiredArgsConstructor
 @Repository
@@ -14,6 +22,35 @@ public class MemberRepository {
 
 
   private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+  private static final String TABLE = "Member";
+
+  public Optional<Member> findById(Long id) {
+    /**
+     * select *
+     * from Member
+     * where id = :id
+     */
+    String sql = String.format("SELECT * FROM %s WHERE id = :id", TABLE);
+
+    SqlParameterSource params = new MapSqlParameterSource()
+        .addValue("id", id);
+
+    BeanPropertyRowMapper<Member> rowMappers = BeanPropertyRowMapper.newInstance(Member.class); // 이걸 사용하려면 setter를 다 열어줘야함
+
+
+    RowMapper<Member> rowMapper = (ResultSet resultSet, int rowNum) -> Member.builder()
+        .id(resultSet.getLong("id"))
+        .email(resultSet.getString("email"))
+        .nickname(resultSet.getString("nickname"))
+        .birthday(resultSet.getObject("birthday", LocalDate.class))
+        .createdAt(resultSet.getObject("createdAt", LocalDateTime.class))
+        .build();
+
+     return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(sql, params, rowMapper));
+     // Optional.ofNullable(T value) 는 value 가 null 이 아니면 Optional.of(value) 를 반환하고, null 이면 Optional.empty() 를 반환한다.
+
+  }
 
   public Member save(Member member) {
     /**
@@ -29,8 +66,9 @@ public class MemberRepository {
   private Member insert(Member member) {
     SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(
         namedParameterJdbcTemplate.getJdbcTemplate())
-        .withTableName("Member")
+        .withTableName(TABLE)
         .usingGeneratedKeyColumns("id");
+    //BeanPropertySqlParameterSource는 객체를 받아서 jpql 에서 :컬럼 에 해당하는 부분에 객체의 프로퍼티 매핑되어 값이 삽입되는 듯
     SqlParameterSource params = new BeanPropertySqlParameterSource(member);
     Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
