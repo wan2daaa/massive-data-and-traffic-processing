@@ -13,6 +13,11 @@
       </GradleProjectSettings>
       <GradleProjectSettings>
         <option name="externalProjectPath" value="$USER_HOME$/Downloads/mysql" />
+        <option name="modules">
+          <set>
+            <option value="$USER_HOME$/Downloads/mysql" />
+          </set>
+        </option>
       </GradleProjectSettings>
     </option>
   </component>

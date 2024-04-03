@@ -12,7 +12,7 @@ public class Member {
 
   private final Long id;
 
-  private final String nickname;
+  private String nickname;
 
   private final String email;
 
@@ -34,7 +34,13 @@ public class Member {
     this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
   }
 
-  public void validateNickname(String nickname) {
+  public void changeNickname(String to) {
+    validateNickname(to);
+    Objects.requireNonNull(to);
+    nickname = to;
+  }
+
+  private void validateNickname(String nickname) {
     Assert.isTrue(nickname.length() <= NAME_MAX_LENGTH, "닉네임은 10자를 넘길 수 없습니다."); // TODO. Custom Exception 넣기
   }
 }
