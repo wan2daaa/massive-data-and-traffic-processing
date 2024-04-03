@@ -51,3 +51,4 @@ create index POST__index_created_date
     on POST (createdDate);
 
 
+show tables ;
