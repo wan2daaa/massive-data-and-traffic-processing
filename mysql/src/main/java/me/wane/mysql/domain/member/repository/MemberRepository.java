@@ -33,7 +33,7 @@ public class MemberRepository {
      */
     String sql = String.format("SELECT * FROM %s WHERE id = :id", TABLE);
 
-    SqlParameterSource params = new MapSqlParameterSource()
+    MapSqlParameterSource params = new MapSqlParameterSource()
         .addValue("id", id);
 
     BeanPropertyRowMapper<Member> rowMappers = BeanPropertyRowMapper.newInstance(Member.class); // 이걸 사용하려면 setter를 다 열어줘야함
@@ -83,7 +83,14 @@ public class MemberRepository {
 
 
   private Member update(Member member) {
-//    TODO: implemented by jdbcTemplate
+    String sql = "UPDATE %s set email = :email, nickname = :nickname, birthday = :birthday where id = :id".formatted(TABLE);
+    BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(member);
+    int updated = namedParameterJdbcTemplate.update(sql, params);
+
+    if (updated == 0) {
+      throw new IllegalArgumentException("존재하지 않는 회원입니다.");
+    }
+
     return member;
   }
 }
