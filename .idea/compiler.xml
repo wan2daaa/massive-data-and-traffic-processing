@@ -11,5 +11,8 @@
         <module name="mysql.main" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="mysql" target="21" />
+    </bytecodeTargetLevel>
   </component>
 </project>
