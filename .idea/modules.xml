@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/massive-data-and-traffic-processing.iml" filepath="$PROJECT_DIR$/massive-data-and-traffic-processing.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mysql.main.iml" filepath="$PROJECT_DIR$/.idea/modules/mysql.main.iml" />
     </modules>
   </component>
 </project>

@@ -5,8 +5,10 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.util.Assert;
 
+@ToString
 @Getter
 public class Post {
 

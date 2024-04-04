@@ -10,6 +10,7 @@ import me.wane.mysql.domain.post.entity.Post;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -45,6 +46,16 @@ public class PostRepository {
     }
 
     throw new UnsupportedOperationException("Post는 갱신되지 않습니다.");
+  }
+
+  public void bulkInsert(List<Post> posts) {
+    String sql = String.format("INSERT INTO %s (memberId, contents, createdDate, createdAt) VALUES (:memberId, :contents, :createdDate , :createdAt)", TABLE);
+
+    SqlParameterSource[] params = posts
+        .stream()
+        .map(BeanPropertySqlParameterSource::new)
+        .toArray(SqlParameterSource[]::new);
+    namedParameterJdbcTemplate.batchUpdate(sql, params);
   }
 
   private Post insert(Post post) {
