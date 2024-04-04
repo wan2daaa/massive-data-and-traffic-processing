@@ -8,6 +8,7 @@
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/mysql" />
     <file type="web" url="file://$PROJECT_DIR$/test" />
+    <file type="web" url="file://$USER_HOME$/Downloads/mysql" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />

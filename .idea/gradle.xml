@@ -14,7 +14,6 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
-        <option name="delegatedBuild" value="false" />
         <option name="testRunner" value="PLATFORM" />
         <option name="externalProjectPath" value="$USER_HOME$/Downloads/mysql" />
         <option name="modules">
