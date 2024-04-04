@@ -3,7 +3,6 @@ package me.wane.mysql.domain.post;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 import me.wane.mysql.domain.post.entity.Post;
 import me.wane.mysql.domain.post.repository.PostRepository;
 import me.wane.mysql.util.PostFixtureFactory;
@@ -24,13 +23,13 @@ public class PostBulkInsertTest {
 
     EasyRandom easyRandom = PostFixtureFactory.get(
         1L,
-        LocalDate.of(2024, 1, 1),
+        LocalDate.of(1970, 1, 1),
         LocalDate.of(2024, 2, 1));
 
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
 
-    List<Post> posts = IntStream.range(0, 100_0000)
+    List<Post> posts = IntStream.range(0, 300_0000)
         .parallel() // 병렬로 실행시켜서 객체 생서 속도 증가
         .mapToObj(i -> easyRandom.nextObject(Post.class)).toList();
 
@@ -45,5 +44,7 @@ public class PostBulkInsertTest {
     System.out.println(
         "queryStopWatch.getTotalTimeSeconds() = " + queryStopWatch.getTotalTimeSeconds());
   }
+
+  //
 
 }
