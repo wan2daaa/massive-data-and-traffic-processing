@@ -21,12 +21,12 @@ public class FollowController {
   private final GetFollowingMembersUsecase getFollowingMembersUsecase;
 
   @PostMapping("/{fromId}/{toId}")
-  public void create(@PathVariable Long fromId, @PathVariable Long toId) {
+  public void create(@PathVariable("fromId") Long fromId, @PathVariable("toId") Long toId) {
     createFollowMemberUsecase.execute(fromId, toId);
   }
 
   @GetMapping("/members/{fromId}")
-  public List<MemberDto> create(@PathVariable Long fromId) {
+  public List<MemberDto> create(@PathVariable("fromId") Long fromId) {
     return getFollowingMembersUsecase.execute(fromId);
   }
 

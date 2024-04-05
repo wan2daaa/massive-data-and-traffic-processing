@@ -2,6 +2,7 @@ package me.wane.mysql.application.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import me.wane.mysql.application.usecase.GetTimelinePostUsecase;
 import me.wane.mysql.domain.post.dto.DailyPostCount;
 import me.wane.mysql.domain.post.dto.DailyPostCountRequest;
 import me.wane.mysql.domain.post.dto.PostCommand;
@@ -11,13 +12,11 @@ import me.wane.mysql.domain.post.service.PostWriteService;
 import me.wane.mysql.util.CursorRequest;
 import me.wane.mysql.util.PageCursor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -27,6 +26,7 @@ public class PostController {
 
   private final PostWriteService postWriteService;
   private final PostReadService postReadService;
+  private final GetTimelinePostUsecase getTimelinePostUsecase;
 
 
   @PostMapping
@@ -45,10 +45,16 @@ public class PostController {
   }
 
   @GetMapping("/members/{memberId}/by-cursor")
-  public PageCursor<Post> getPostsByCursor(@PathVariable("memberId") Long memberId, CursorRequest cursorRequest) {
+  public PageCursor<Post> getPostsByCursor(@PathVariable("memberId") Long memberId,
+      CursorRequest cursorRequest) {
     return postReadService.getPosts(memberId, cursorRequest);
   }
 
+  @GetMapping("/members/{memberId}/timeline")
+  public PageCursor<Post> getTimeline(@PathVariable("memberId") Long memberId,
+      CursorRequest cursorRequest) {
+    return getTimelinePostUsecase.execute(memberId, cursorRequest);
+  }
 
 
 }
