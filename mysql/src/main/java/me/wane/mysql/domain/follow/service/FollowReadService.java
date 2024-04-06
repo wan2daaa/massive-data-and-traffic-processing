@@ -17,4 +17,8 @@ public class FollowReadService {
     return followRepository.findAllByFromMemberId(memberId);
   }
 
+  public List<Follow> getFollowers(Long memberId) { //아직 외부 서비스에 흘러들어가는게 없어서 dto 없어도 될듯
+    return followRepository.findAllByToMemberId(memberId);
+  }
+
 }

@@ -2,6 +2,7 @@ package me.wane.mysql.application.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import me.wane.mysql.application.usecase.CreatePostUsecase;
 import me.wane.mysql.application.usecase.GetTimelinePostUsecase;
 import me.wane.mysql.domain.post.dto.DailyPostCount;
 import me.wane.mysql.domain.post.dto.DailyPostCountRequest;
@@ -27,11 +28,13 @@ public class PostController {
   private final PostWriteService postWriteService;
   private final PostReadService postReadService;
   private final GetTimelinePostUsecase getTimelinePostUsecase;
-
+  private final CreatePostUsecase createPostUsecase;
 
   @PostMapping
   public Long create(PostCommand command) {
-    return postWriteService.create(command);
+
+//    return postWriteService.create(command);
+    return createPostUsecase.execute(command);
   }
 
   @GetMapping("/daily-post-counts")
@@ -53,7 +56,8 @@ public class PostController {
   @GetMapping("/members/{memberId}/timeline")
   public PageCursor<Post> getTimeline(@PathVariable("memberId") Long memberId,
       CursorRequest cursorRequest) {
-    return getTimelinePostUsecase.execute(memberId, cursorRequest);
+//    return getTimelinePostUsecase.execute(memberId, cursorRequest);
+    return getTimelinePostUsecase.executeByTimeline(memberId, cursorRequest);
   }
 
 
