@@ -2,11 +2,13 @@ package me.wane.mysql.application.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import me.wane.mysql.application.usecase.CreatePostLikeUsecase;
 import me.wane.mysql.application.usecase.CreatePostUsecase;
 import me.wane.mysql.application.usecase.GetTimelinePostUsecase;
 import me.wane.mysql.domain.post.dto.DailyPostCount;
 import me.wane.mysql.domain.post.dto.DailyPostCountRequest;
 import me.wane.mysql.domain.post.dto.PostCommand;
+import me.wane.mysql.domain.post.dto.PostDto;
 import me.wane.mysql.domain.post.entity.Post;
 import me.wane.mysql.domain.post.service.PostReadService;
 import me.wane.mysql.domain.post.service.PostWriteService;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -29,6 +32,7 @@ public class PostController {
   private final PostReadService postReadService;
   private final GetTimelinePostUsecase getTimelinePostUsecase;
   private final CreatePostUsecase createPostUsecase;
+  private final CreatePostLikeUsecase createPostLikeUsecase;
 
   @PostMapping
   public Long create(PostCommand command) {
@@ -43,7 +47,7 @@ public class PostController {
   }
 
   @GetMapping("/members/{memberId}")
-  public Page<Post> getPosts(@PathVariable("memberId") Long memberId, Pageable pageable) {
+  public Page<PostDto> getPosts(@PathVariable("memberId") Long memberId, Pageable pageable) {
     return postReadService.getPosts(memberId, pageable);
   }
 
@@ -60,7 +64,7 @@ public class PostController {
     return getTimelinePostUsecase.executeByTimeline(memberId, cursorRequest);
   }
 
-  @PostMapping("/{postId}/like")
+  @PostMapping("/{postId}/like/v1")
   public void likePost(@PathVariable("postId") Long postId) {
     postWriteService.likePost(postId);
   }
@@ -68,6 +72,11 @@ public class PostController {
   @PostMapping("/{postId}/like/optimistic")
   public void likePostByOptimisticLock(@PathVariable("postId") Long postId) {
     postWriteService.likePostByOptimisticLock(postId);
+  }
+
+  @PostMapping("/{postId}/like/v2")
+  public void likePostV2(@PathVariable("postId") Long postId, @RequestParam("memberId") Long memberId) {
+    createPostLikeUsecase.execute(postId, memberId);
   }
 
 }

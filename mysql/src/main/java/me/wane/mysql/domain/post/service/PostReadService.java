@@ -5,7 +5,9 @@ import java.util.OptionalLong;
 import lombok.RequiredArgsConstructor;
 import me.wane.mysql.domain.post.dto.DailyPostCount;
 import me.wane.mysql.domain.post.dto.DailyPostCountRequest;
+import me.wane.mysql.domain.post.dto.PostDto;
 import me.wane.mysql.domain.post.entity.Post;
+import me.wane.mysql.domain.post.repository.PostLikeRepository;
 import me.wane.mysql.domain.post.repository.PostRepository;
 import me.wane.mysql.util.CursorRequest;
 import me.wane.mysql.util.PageCursor;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class PostReadService {
 
   private final PostRepository postRepository;
+  private final PostLikeRepository postLikeRepository;
 
   public List<DailyPostCount> getDailyPostCount(DailyPostCountRequest request) {
     /**
@@ -33,8 +36,22 @@ public class PostReadService {
     return postRepository.groupByCreatedDate(request);
   }
 
-  public Page<Post> getPosts(Long memberId, Pageable pageRequest ) {
-    return postRepository.findAllByMemberId(memberId, pageRequest);
+  public Post getPost(Long postId) {
+    return postRepository.findById(postId, false).orElseThrow();
+  }
+
+  public Page<PostDto> getPosts(Long memberId, Pageable pageRequest ) {
+    return postRepository.findAllByMemberId(memberId, pageRequest)
+        .map(this::toDto);
+  }
+
+  private PostDto toDto(Post post) {
+    return new PostDto(
+        post.getId(),
+        post.getContents(),
+        post.getCreatedAt(),
+        postLikeRepository.getCount(post.getId())
+    );
   }
 
   public PageCursor<Post> getPosts(Long memberId, CursorRequest cursorRequest) {
