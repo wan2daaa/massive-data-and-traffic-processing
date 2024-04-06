@@ -8,6 +8,8 @@ import me.wane.mysql.domain.member.entity.MemberNicknameHistory;
 import me.wane.mysql.domain.member.repository.MemberNicknameHistoryRepository;
 import me.wane.mysql.domain.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @RequiredArgsConstructor
 @Service
@@ -16,6 +18,7 @@ public class MemberWriteService {
   private final MemberRepository memberRepository;
   private final MemberNicknameHistoryRepository memberNicknameHistoryRepository;
 
+  @Transactional //프록시 방식으로 동작, inner 함수를 호출 하면 제대로 동작하지 않는 이슈
   public Member register(RegisterMemberCommand command) {
     /*
      * 목표 - 회원정보(이메일, 닉네임, 생년월일)을 등록한다.
@@ -30,7 +33,8 @@ public class MemberWriteService {
         .nickname(command.nickname())
         .birthday(command.birthday())
         .build();
-
+//    TransactionTemplate transactionTemplate = new TransactionTemplate();
+//    transactionTemplate.execute();
     Member savedMember = memberRepository.save(member);
     saveMemberNicknameHistory(savedMember);
     return savedMember;
