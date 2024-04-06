@@ -66,4 +66,5 @@ create table Timeline
 );
 
 
-)
+alter table POST add column likeCount int not null;
+alter table POST add column version int default 0;

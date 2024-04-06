@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import me.wane.mysql.domain.post.dto.DailyPostCount;
 import me.wane.mysql.domain.post.dto.DailyPostCountRequest;
@@ -33,6 +34,8 @@ public class PostRepository {
       .memberId(resultSet.getLong("memberId"))
       .contents(resultSet.getString("contents"))
       .createdDate(resultSet.getObject("createdDate", LocalDate.class))
+      .likeCount(resultSet.getLong("likeCount"))
+      .version(resultSet.getLong("version"))
       .createdAt(resultSet.getObject("createdAt", LocalDateTime.class))
       .build();
 
@@ -74,6 +77,24 @@ public class PostRepository {
     List<Post> posts = namedParameterJdbcTemplate.query(sql, params, ROW_MAPPER);
 
     return new PageImpl<>(posts, pageable, getCount(memberId));
+  }
+
+  public Optional<Post> findById(Long postId, Boolean requiredLock) {
+    String sql = String.format("""
+        SELECT *
+        FROM %s
+        WHERE id = :postId
+        """, TABLE);
+
+    if (requiredLock) {
+      sql += "FOR UPDATE";
+    }
+
+    MapSqlParameterSource params = new MapSqlParameterSource()
+        .addValue("postId", postId);
+
+    Post nullablePost = namedParameterJdbcTemplate.queryForObject(sql, params, ROW_MAPPER);
+    return Optional.of(nullablePost);
   }
 
   private Long getCount(Long memberId) {
@@ -184,8 +205,7 @@ public class PostRepository {
     if (post.getId() == null) {
       return insert(post);
     }
-
-    throw new UnsupportedOperationException("Post는 갱신되지 않습니다.");
+    return update(post);
   }
 
   public void bulkInsert(List<Post> posts) {
@@ -217,6 +237,29 @@ public class PostRepository {
         .createdDate(post.getCreatedDate())
         .createdAt(post.getCreatedAt())
         .build();
+  }
+
+  public Post update(Post post) {
+    String sql = String.format("""
+        UPDATE %s
+        SET
+           memberId = :memberId,
+           contents = :contents,
+           createdDate = :createdDate,
+           likeCount = :likeCount,
+           createdAt = :createdAt,
+           version = version + 1
+        WHERE id = :id and version = :version
+        """, TABLE);
+    BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(
+        post);
+    int updatedCount = namedParameterJdbcTemplate.update(sql, params);
+
+    if (updatedCount == 0) {
+      throw new RuntimeException("갱신실패");
+    }
+
+    return post;
   }
 
 }

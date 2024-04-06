@@ -60,5 +60,14 @@ public class PostController {
     return getTimelinePostUsecase.executeByTimeline(memberId, cursorRequest);
   }
 
+  @PostMapping("/{postId}/like")
+  public void likePost(@PathVariable("postId") Long postId) {
+    postWriteService.likePost(postId);
+  }
+
+  @PostMapping("/{postId}/like/optimistic")
+  public void likePostByOptimisticLock(@PathVariable("postId") Long postId) {
+    postWriteService.likePostByOptimisticLock(postId);
+  }
 
 }
