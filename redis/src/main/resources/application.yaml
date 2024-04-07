@@ -1,12 +1,16 @@
 spring:
   application:
     name: redis
-  session:
-    redis:
-      flush-mode: on_save
-      namespace: spring:session
+#  session:
+#    redis:
+#      flush-mode: on_save
+#      namespace: spring:session
   data:
     redis:
       port: 6379
       host: localhost
+
+#      cache ??
+  cache:
+    type: redis
 

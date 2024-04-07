@@ -4,8 +4,6 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
-        <option name="delegatedBuild" value="false" />
-        <option name="testRunner" value="PLATFORM" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/mysql" />
         <option name="modules">
           <set>
@@ -14,11 +12,10 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
-        <option name="testRunner" value="PLATFORM" />
-        <option name="externalProjectPath" value="$USER_HOME$/Downloads/mysql" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/redis" />
         <option name="modules">
           <set>
-            <option value="$USER_HOME$/Downloads/mysql" />
+            <option value="$PROJECT_DIR$/redis" />
           </set>
         </option>
       </GradleProjectSettings>
