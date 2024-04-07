@@ -12,5 +12,10 @@
         <module name="mysql.main" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="fastcampus-mysql" target="16" />
+      <module name="fastcampus-mysql.main" target="16" />
+      <module name="fastcampus-mysql.test" target="16" />
+    </bytecodeTargetLevel>
   </component>
 </project>
